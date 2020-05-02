@@ -2,7 +2,7 @@
 
 require_once('./app/database/dbconnection.php');
 
-$getUser = $DB_QUERY("SELECT * FROM `users`");
+//$getUser = $DB_QUERY("SELECT * FROM `users`");
 
 //
 //$result = $dbConnect->query("SELECT * FROM `users`");

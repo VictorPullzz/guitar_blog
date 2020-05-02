@@ -1,23 +1,62 @@
 <?php
 
-$pagesFolder = glob("./pages/*.php");
-$currentPage = $_SERVER["REQUEST_URI"];
+$stackPages = [
+    '/' => [
+        'type' => 'GET',
+        'name' => 'Home',
+        'handler' => 'HomeController@homeHandler',
+    ],
+    '/profile' => [
+        'type' => 'GET',
+        'name' => 'Profile',
+        'handler' => 'PageController@profile'
+    ],
+    '/music' => [
+        'type' => 'GET',
+        'name' => 'Music',
+        'handler' => 'PageController@profile',
+    ],
+    '/authorization' => [
+        [
+            'type' => 'GET',
+            'name' => 'Music',
+            'handler' => 'PageController@profile'
+        ], [
+            'type' => 'POST',
+            'handler' => 'PageController@profile'
+        ],
+    ]
+];
 
-if ($currentPage === '/') {
-    $currentPage = '/home';
-}
+function getCurrentPage($stackPages) {
+    $currentPage = parse_url($_SERVER['REQUEST_URI'])['path'];
+    $page = null;
 
-$page = null;
+    if (array_key_exists($currentPage, $stackPages)) {
+        $currentHandler = explode('@', $stackPages[$currentPage]['handler']);
 
-foreach($pagesFolder as $filename) {
-    if (strpos($filename, $currentPage)) {
-        $page = $currentPage;
-        break;
+        $page = [
+            'controller' => 'app/controllers/'.$currentHandler[0].'.php',
+            'handler' => $currentHandler[1],
+            'name' => $stackPages[$currentPage]['name']
+        ];
+    } else {
+        $page = null;
     }
-}
 
-if (is_null($page)) {
-    header('Location: 404');
-}
+    if ($currentPage === '/404') {
+        return [
+            'controller' => 'pages/404.php',
+            'name' => '404',
+            'handler' => null,
+        ];
+    }
 
-$PAGE = "pages$page.php";
+    if (is_null($page)) {
+        header('Location: 404');
+    }
+
+    return $page;
+};
+
+$PAGE = getCurrentPage($stackPages);

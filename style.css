@@ -1,13 +1,13 @@
 body {
+    padding: 0 20%;
     margin: 0;
-    padding: 0;
+    background-color: rgb(154, 251, 251);
 }
 
 .page {
-    max-width: 1000px;
     min-height: 100vh;
     margin: 0 auto;
-    background-color: rgb(154, 251, 251);
+    background-color: #ffffff;
 }
 
 .menu {
